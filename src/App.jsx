@@ -1,12 +1,11 @@
-import { useState, useRef, useEffect } from "react";
-
+import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
 
 function App() {
   const canvasRef = useRef(null);
   const [drawing, setDrawing] = useState(false);
-  var [lastX, setLastX] = useState(null);
-  var [lastY, setLastY] = useState(null);
+  const [lastX, setLastX] = useState(null);
+  const [lastY, setLastY] = useState(null);
   const [distanceArray, setDistanceArray] = useState([]);
   const [consistency, setConsistency] = useState(0.0);
   const [best, setBest] = useState(0);
@@ -25,37 +24,32 @@ function App() {
 
     function startDrawing(e) {
       setDrawing(true);
+      const { offsetX, offsetY } = getMouseOrTouchPosition(e);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      [lastX, lastY] = [
-        e.clientX - canvas.offsetLeft,
-        e.clientY - canvas.offsetTop,
-      ];
+      setLastX(offsetX);
+      setLastY(offsetY);
     }
 
     const draw = (event) => {
       if (!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      var scaleX = canvas.width / rect.width;
-      var scaleY = canvas.height / rect.height;
-      const x = (event.clientX - rect.left) * scaleX;
-      const y = (event.clientY - rect.top) * scaleY;
+      const { offsetX, offsetY } = getMouseOrTouchPosition(event);
 
       if (lastX !== null && lastY !== null) {
         ctx.lineWidth = 3;
         ctx.strokeStyle = "rgb(231, 7, 7)";
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
-        ctx.lineTo(x, y);
+        ctx.lineTo(offsetX, offsetY);
         ctx.stroke();
       }
 
       const currentDistance = Math.sqrt(
-        Math.pow(centerX - x, 2) + Math.pow(centerY - y, 2)
+        Math.pow(centerX - offsetX, 2) + Math.pow(centerY - offsetY, 2)
       );
 
       setDistanceArray((prevArray) => [...prevArray, currentDistance]);
-      setLastX(x);
-      setLastY(y);
+      setLastX(offsetX);
+      setLastY(offsetY);
     };
 
     const stopDrawing = () => {
@@ -92,13 +86,42 @@ function App() {
     canvas.addEventListener("mouseup", stopDrawing);
     canvas.addEventListener("mouseout", stopDrawing);
 
+    // Event listeners for touchscreen
+    canvas.addEventListener("touchstart", startDrawing);
+    canvas.addEventListener("touchmove", draw);
+    canvas.addEventListener("touchend", stopDrawing);
+
     return () => {
       canvas.removeEventListener("mousedown", startDrawing);
       canvas.removeEventListener("mousemove", draw);
       canvas.removeEventListener("mouseup", stopDrawing);
       canvas.removeEventListener("mouseout", stopDrawing);
+
+      // Remove event listeners for touchscreen
+      canvas.removeEventListener("touchstart", startDrawing);
+      canvas.removeEventListener("touchmove", draw);
+      canvas.removeEventListener("touchend", stopDrawing);
     };
-  }, [drawing, lastX, lastY, distanceArray]);
+  }, [drawing, lastX, lastY, distanceArray, best]);
+
+  const getMouseOrTouchPosition = (event) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const scaleX = canvasRef.current.width / rect.width;
+    const scaleY = canvasRef.current.height / rect.height;
+
+    if (event.type.startsWith("mouse")) {
+      return {
+        offsetX: (event.clientX - rect.left) * scaleX,
+        offsetY: (event.clientY - rect.top) * scaleY,
+      };
+    } else if (event.type.startsWith("touch")) {
+      const touch = event.touches[0];
+      return {
+        offsetX: (touch.pageX - rect.left) * scaleX,
+        offsetY: (touch.pageY - rect.top) * scaleY,
+      };
+    }
+  };
 
   return (
     <div className="page">
