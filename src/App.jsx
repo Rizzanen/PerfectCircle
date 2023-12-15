@@ -8,7 +8,8 @@ function App() {
   var [lastX, setLastX] = useState(null);
   var [lastY, setLastY] = useState(null);
   const [distanceArray, setDistanceArray] = useState([]);
-  const [consistency, setConsistency] = useState(null);
+  const [consistency, setConsistency] = useState(0.0);
+  const [best, setBest] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,12 +18,13 @@ function App() {
     const centerY = canvas.height / 2;
 
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 2, 0, 2 * Math.PI, false);
-    ctx.fillStyle = "yellow";
+    ctx.arc(centerX, centerY, 4, 0, 2 * Math.PI, false);
+    ctx.fillStyle = "rgb(231, 7, 7)";
     ctx.fill();
     ctx.closePath();
 
     function startDrawing(e) {
+      console.log("startDrawing");
       setDrawing(true);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       [lastX, lastY] = [
@@ -32,6 +34,7 @@ function App() {
     }
 
     const draw = (event) => {
+      console.log("draw");
       if (!drawing) return;
       const rect = canvas.getBoundingClientRect();
       var scaleX = canvas.width / rect.width;
@@ -40,7 +43,8 @@ function App() {
       const y = (event.clientY - rect.top) * scaleY;
 
       if (lastX !== null && lastY !== null) {
-        ctx.strokeStyle = "green";
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "rgb(231, 7, 7)";
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
         ctx.lineTo(x, y);
@@ -59,29 +63,26 @@ function App() {
     const stopDrawing = () => {
       setDrawing(false);
 
-      // Calculate the standard deviation of distances
-      const avgDistance =
-        distanceArray.reduce((acc, val) => acc + val, 0) / distanceArray.length;
-      const stdDev = Math.sqrt(
-        distanceArray.reduce(
-          (acc, val) => acc + Math.pow(val - avgDistance, 2),
-          0
-        ) / distanceArray.length
-      );
-      var counter = 0;
-      distanceArray.forEach((value) => {
-        if (value < distanceArray[0] + 5 && value > distanceArray[0] - 5) {
-          counter++;
-        }
-      });
-      var amount = (counter / distanceArray.length) * 100;
-      if (amount.toString() != "NaN") {
-        setConsistency(amount.toFixed(2));
+      if (distanceArray[0] < 15) {
+        setConsistency("You need to start further from the dot!");
       } else {
-        amount = "Thats way off bro!";
-        setConsistency(amount);
+        var counter = 0;
+        distanceArray.forEach((value) => {
+          if (value < distanceArray[0] + 5 && value > distanceArray[0] - 5) {
+            counter++;
+          }
+        });
+        var amount = (counter / distanceArray.length) * 100;
+        if (!isNaN(amount)) {
+          setConsistency(amount.toFixed(2));
+          if (amount > best) {
+            setBest(amount.toFixed(2));
+          }
+        } else {
+          amount = " Draw again to get your ";
+          setConsistency(amount);
+        }
       }
-      console.log(amount);
 
       setLastX(null);
       setLastY(null);
@@ -104,8 +105,13 @@ function App() {
   return (
     <div className="page">
       <div className="header">
-        <h1>Draw a perfect circle</h1>
-        <h5>{consistency}</h5>
+        <h1>Draw a perfect circle around the dot</h1>
+        <div className="prosents">
+          <h2>{consistency} %</h2>
+        </div>
+        <div className="highscore">
+          <h2>Personal best: {best} %</h2>
+        </div>
       </div>
       <div className="canvasContainer">
         <canvas className="canvas" ref={canvasRef}></canvas>

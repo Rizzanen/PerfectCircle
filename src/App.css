@@ -2,31 +2,43 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background-color: rgb(73, 73, 73);
+  background-color: rgb(37, 37, 37);
 }
 
 .page {
-  height: 100vh;
+  height: 90vh;
 }
 .header {
   height: 20vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 10vh;
 }
 .header h1 {
   margin: 0;
   font-size: 50px;
-  color: rgb(243, 247, 10);
+  color: rgb(231, 7, 7);
+}
+.prosents h2 {
+  font-size: 40px;
+  color: rgb(3, 252, 3);
+}
+
+.highscore {
+  font-size: 20px;
+  color: rgb(3, 252, 3);
 }
 
 .canvasContainer {
   width: 100vw;
-  height: 80vh;
+  height: 70vh;
   display: flex;
 }
 .canvas {
-  background-color: rgb(241, 234, 224);
+  border-radius: 30px;
+  background-color: rgb(48, 48, 48);
   width: 40vw;
   height: 50vh;
   margin: auto;
