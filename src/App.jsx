@@ -24,7 +24,6 @@ function App() {
     ctx.closePath();
 
     function startDrawing(e) {
-      console.log("startDrawing");
       setDrawing(true);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       [lastX, lastY] = [
@@ -34,7 +33,6 @@ function App() {
     }
 
     const draw = (event) => {
-      console.log("draw");
       if (!drawing) return;
       const rect = canvas.getBoundingClientRect();
       var scaleX = canvas.width / rect.width;
