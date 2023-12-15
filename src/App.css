@@ -1,0 +1,33 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(73, 73, 73);
+}
+
+.page {
+  height: 100vh;
+}
+.header {
+  height: 20vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header h1 {
+  margin: 0;
+  font-size: 50px;
+  color: rgb(243, 247, 10);
+}
+
+.canvasContainer {
+  width: 100vw;
+  height: 80vh;
+  display: flex;
+}
+.canvas {
+  background-color: rgb(241, 234, 224);
+  width: 40vw;
+  height: 50vh;
+  margin: auto;
+}
