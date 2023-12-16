@@ -7,8 +7,9 @@ function App() {
   const [lastX, setLastX] = useState(null);
   const [lastY, setLastY] = useState(null);
   const [distanceArray, setDistanceArray] = useState([]);
-  const [consistency, setConsistency] = useState(0.0);
+  const [consistency, setConsistency] = useState("Draw a circle to start");
   const [best, setBest] = useState(0);
+  var bestText = best.toString() + "%";
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -54,25 +55,28 @@ function App() {
 
     const stopDrawing = () => {
       setDrawing(false);
-
-      if (distanceArray[0] < 15) {
-        setConsistency("You need to start further from the dot!");
+      if (distanceArray.length < 50) {
+        setConsistency("That's not a circle...");
       } else {
-        var counter = 0;
-        distanceArray.forEach((value) => {
-          if (value < distanceArray[0] + 5 && value > distanceArray[0] - 5) {
-            counter++;
-          }
-        });
-        var amount = (counter / distanceArray.length) * 100;
-        if (!isNaN(amount)) {
-          setConsistency(amount.toFixed(2));
-          if (amount > best) {
-            setBest(amount.toFixed(2));
-          }
+        if (distanceArray[0] < 15) {
+          setConsistency("You need to start further from the dot!");
         } else {
-          amount = " Draw again to get your ";
-          setConsistency(amount);
+          var counter = 0;
+          distanceArray.forEach((value) => {
+            if (value < distanceArray[0] + 5 && value > distanceArray[0] - 5) {
+              counter++;
+            }
+          });
+          var amount = (counter / distanceArray.length) * 100;
+          if (amount > best) {
+            setBest(amount.toFixed(2).toString());
+          }
+          if (!isNaN(amount)) {
+            setConsistency(amount.toFixed(2).toString() + "%");
+          } else {
+            amount = " Draw again to get your ";
+            setConsistency(amount);
+          }
         }
       }
 
@@ -102,7 +106,7 @@ function App() {
       canvas.removeEventListener("touchmove", draw);
       canvas.removeEventListener("touchend", stopDrawing);
     };
-  }, [drawing, lastX, lastY, distanceArray, best]);
+  }, [drawing, lastX, lastY, distanceArray]);
 
   const getMouseOrTouchPosition = (event) => {
     const rect = canvasRef.current.getBoundingClientRect();
@@ -128,10 +132,10 @@ function App() {
       <div className="header">
         <h1>Draw a perfect circle around the dot</h1>
         <div className="prosents">
-          <h2>{consistency} %</h2>
+          <h2>{consistency}</h2>
         </div>
         <div className="highscore">
-          <h2>Personal best: {best} %</h2>
+          <h2>Personal best: {bestText}</h2>
         </div>
       </div>
       <div className="canvasContainer">

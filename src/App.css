@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Fatface";
+  src: url("../AbrilFatface-Regular.ttf") format("truetype");
+}
+
 html,
 body {
   margin: 0;
@@ -17,16 +22,19 @@ body {
   margin-top: 10vh;
 }
 .header h1 {
+  font-family: "Fatface";
   margin: 0;
   font-size: 50px;
   color: rgb(231, 7, 7);
 }
 .prosents h2 {
+  font-family: "Fatface";
   font-size: 40px;
   color: rgb(3, 252, 3);
 }
 
 .highscore {
+  font-family: "Fatface";
   font-size: 20px;
   color: rgb(3, 252, 3);
 }
@@ -38,30 +46,40 @@ body {
 }
 .canvas {
   border-radius: 30px;
-  background-color: rgb(48, 48, 48);
-  width: 40vw;
-  height: 50vh;
+  border: 1px solid rgb(231, 7, 7);
+  width: 600px;
+  height: 370px;
   margin: auto;
 }
 
-@media screen and (max-width: 768px) {
-  .header {
-    margin: 0;
+@media screen and (max-width: 600px) {
+  .canvas {
+    height: 246px;
   }
 
   .header h1 {
-    display: none;
+    font-size: 20px;
+  }
+  .prosents {
+    margin-top: 5vh;
+  }
+  .highscore {
+    margin-top: 5vh;
   }
   .highscore h2,
   .prosents h2 {
-    margin: 0;
     padding: 0;
     font-size: 20px;
   }
   .canvas {
-    width: 100%;
+    width: 99%;
   }
   body {
     overflow: hidden;
+  }
+}
+@media screen and (min-width: 600px) and (max-width: 900px) {
+  .header h1 {
+    font-size: 30px;
   }
 }
