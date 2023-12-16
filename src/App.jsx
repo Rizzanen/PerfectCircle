@@ -55,7 +55,7 @@ function App() {
 
     const stopDrawing = () => {
       setDrawing(false);
-      if (distanceArray.length < 50) {
+      if (distanceArray.length < 30) {
         setConsistency("That's not a circle...");
       } else {
         if (distanceArray[0] < 15) {
